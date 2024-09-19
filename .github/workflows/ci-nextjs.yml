@@ -22,10 +22,13 @@ jobs:
         node-version: '18'
 
     - name: Install dependencies
+      working-directory: ./Frontend 
       run: npm install
 
     - name: Build the Next.js app
+      working-directory: ./Frontend 
       run: npm run build
 
     - name: Run tests
+      working-directory: ./Frontend 
       run: npm test
