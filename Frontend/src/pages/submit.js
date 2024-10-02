@@ -4,10 +4,12 @@ import Banner from '../components/Banner';  // 导入 Banner 组件
 const Submit = () => {
   const [formData, setFormData] = useState({
     title: '',
-    authors: [''], // 初始只有一个author
+    authors: [{ name: '', email: '' }], // 初始只有一个author
     journal: '',
     year: '',
     doi: '',
+    abstract: '',  
+    keywords: '',
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -23,9 +25,9 @@ const Submit = () => {
     });
   };
 
-  const handleAuthorChange = (index, value) => {
+  const handleAuthorChange = (index, field, value) => {
     const newAuthors = [...formData.authors];
-    newAuthors[index] = value;
+    newAuthors[index][field] = value;
     setFormData({ ...formData, authors: newAuthors });
   };
 
@@ -33,7 +35,7 @@ const Submit = () => {
     if (formData.authors.length < 6) {
       setFormData({
         ...formData,
-        authors: [...formData.authors, ''],
+        authors: [...formData.authors, { name: '', email: '' }],
       });
     }
   };
@@ -43,20 +45,40 @@ const Submit = () => {
     setFormData({ ...formData, authors: newAuthors });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 简单的表单验证
-    if (formData.title && formData.authors.length > 0 && formData.journal && formData.year && formData.doi) {
-      setSubmitted(true);
-      setOpenBanner(true);  // 显示成功消息
-      setBannerType('success');
-      setBannerMessage('Article submitted successfully!');
-    } else {
-      setOpenBanner(true);  // 显示错误消息
+  
+    try {
+      const res = await fetch('/api/articles', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        setSubmitted(true);
+        setOpenBanner(true);
+        setBannerType('success');
+  
+        if (data.warning) {
+          setBannerMessage(data.warning);  // Notify about duplicate DOI
+        } else {
+          setBannerMessage('Article submitted successfully!');
+        }
+      } else {
+        throw new Error(data.message || 'Failed to submit article');
+      }
+    } catch (error) {
+      setOpenBanner(true);
       setBannerType('error');
-      setBannerMessage('Please fill in all fields and add at least one author.');
+      setBannerMessage(error.message);
     }
   };
+  
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-lg">
@@ -85,15 +107,27 @@ const Submit = () => {
           <div className="mb-4">
             <label className="block text-gray-700">Authors</label>
             {formData.authors.map((author, index) => (
-              <div key={index} className="flex items-center mb-2">
-                <input
-                  type="text"
-                  value={author}
-                  onChange={(e) => handleAuthorChange(index, e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  placeholder={`Author ${index + 1}`}
-                  required
-                />
+              <div key={index} className="mb-2 p-4 border border-gray-300 rounded">
+                <div className="flex items-center mb-2">
+                  <input
+                    type="text"
+                    value={author.name}
+                    onChange={(e) => handleAuthorChange(index, 'name', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder={`Author ${index + 1} Name`}
+                    required
+                  />
+                </div>
+                <div className="flex items-center mb-2">
+                  <input
+                    type="email"
+                    value={author.email}
+                    onChange={(e) => handleAuthorChange(index, 'email', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder={`Author ${index + 1} Email`}
+                    required
+                  />
+                </div>
                 {formData.authors.length > 1 && (
                   <button
                     type="button"
@@ -151,6 +185,32 @@ const Submit = () => {
               required
             />
           </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700">Abstract</label>
+            <textarea
+              name="abstract"
+              value={formData.abstract}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter a brief summary of the article"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700">Keywords</label>
+            <input
+              type="text"
+              name="keywords"
+              value={formData.keywords}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Enter keywords separated by commas"
+              required
+            />
+          </div>
+
 
           <button
             type="submit"

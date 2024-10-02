@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import Search from './search';  // 导入 Search 组件
 import Submit from './submit';  // 导入 Submit 组件
+import Intro from './intro';  // 导入 Intro 组件
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState('Intro'); // 默认显示SPEED简介
+  const [activeTab, setActiveTab] = useState('Search'); // 默认显示SPEED简介
 
   const renderContent = () => {
     switch (activeTab) {
       case 'Intro':
-        return <div>SPEED简介内容...</div>;
+        return <Intro />; // 调用外部 Intro 组件
       case 'Search':
         return <Search />; // 调用外部 Search 组件
       case 'Upload':
@@ -19,7 +20,7 @@ const Home = () => {
   };
 
   return (
-    <div className="p-6 bg-blue-100 min-h-screen"> {/* 将背景设置为浅蓝色 */}
+    <div className="p-6 bg-blue-100 min-h-screen"> 
       <h1 className="text-2xl font-bold mb-4 text-center">SPEED</h1>
 
       {/* 切换按钮 */}
@@ -58,7 +59,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* 根据按钮切换显示不同的内容 */}
+      
       <div className="mb-4">
         {renderContent()}
       </div>
