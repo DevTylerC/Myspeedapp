@@ -65,9 +65,11 @@ const Submit = () => {
         setBannerType('success');
   
         if (data.warning) {
+          setBannerType('warning'); // Assuming you have a 'warning' type for Banner
           setBannerMessage(data.warning);  // Notify about duplicate DOI
         } else {
-          setBannerMessage('Article submitted successfully!');
+          // Update the message to indicate both submission and email notification
+          setBannerMessage('Article submitted successfully! The moderator has been notified.');
         }
       } else {
         throw new Error(data.message || 'Failed to submit article');

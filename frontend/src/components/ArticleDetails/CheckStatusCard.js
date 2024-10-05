@@ -7,16 +7,16 @@ const CheckStatusCard = ({ doiCheck, titleCheck, similarDois }) => (
     {/* DOI Check 状态显示 */}
     <div className="mb-2">
       <span className="font-semibold">DOI Check: </span>
-      <span className={doiCheck ? 'text-green-600' : 'text-red-600'}>
-        {doiCheck ? 'Passed' : 'Failed'}
+      <span className={doiCheck ? 'text-red-600' : 'text-green-600'}>
+        {doiCheck ? 'Failed' : 'Passed'}
       </span>
     </div>
 
     {/* Title Check 状态显示 */}
     <div className="mb-2">
       <span className="font-semibold">Title Check: </span>
-      <span className={titleCheck ? 'text-green-600' : 'text-red-600'}>
-        {titleCheck ? 'Passed' : 'Failed'}
+      <span className={titleCheck ? 'text-red-600' : 'text-green-600'}>
+        {titleCheck ? 'Failed' : 'Passed'}
       </span>
     </div>
 

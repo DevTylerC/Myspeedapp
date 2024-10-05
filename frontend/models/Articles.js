@@ -10,6 +10,7 @@ const ArticleSchema = new mongoose.Schema({
   keywords: String,
   doiCheck: Boolean,  // Field to store if DOI was checked
   titleCheck: Boolean,  // Field to store if Title was checked
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   similarDois: [String],  // Array to store similar DOIs
   createdAt: {
     type: Date,

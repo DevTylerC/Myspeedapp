@@ -1,8 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-
-function ArticleCard({ title, authors, keywords, submissionDate, status, link, doiCheck, titleCheck, similarDois }) {
+function ArticleCard({ title, authors, keywords, submissionDate, status, link }) {
 
   const statusColor = (status) => {
     switch (status) {
@@ -17,16 +16,13 @@ function ArticleCard({ title, authors, keywords, submissionDate, status, link, d
     }
   };
 
-  // 处理在新窗口中打开链接的函数，并传递 `query` 参数
-// ArticleCard 中的 handleOpenInNewWindow
-const handleOpenInNewWindow = (e) => {
-  e.preventDefault();
-  const doiString = Array.isArray(similarDois) ? similarDois.join(',') : '';
-  const authorString = encodeURIComponent(JSON.stringify(authors)); // 将多个作者信息编码成字符串
-  const url = `/moderate/${link}?doiCheck=${doiCheck}&titleCheck=${titleCheck}&similarDois=${doiString}&authors=${authorString}`;
-  window.open(url, '_blank', 'noopener,noreferrer');
-};
-
+  // 处理在新窗口中打开链接的函数，去除了 doiCheck 和 titleCheck
+  const handleOpenInNewWindow = (e) => {
+    e.preventDefault();
+    const authorString = encodeURIComponent(JSON.stringify(authors)); // 将多个作者信息编码成字符串
+    const url = `/moderate/${link}?authors=${authorString}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div className="col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">

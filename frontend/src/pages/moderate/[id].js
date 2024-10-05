@@ -1,32 +1,27 @@
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import ArticleDetailCard from '../../components/ArticleDetails/ArticleDetailCard';
 import AuthorCard from '../../components/ArticleDetails/AuthorCard';
 import CheckStatusCard from '../../components/ArticleDetails/CheckStatusCard';
-import { useState, useEffect } from 'react';
 
 function ArticleDetail() {
   const router = useRouter();
   const { id, doiCheck, titleCheck, similarDois, authors } = router.query;
   const [article, setArticle] = useState(null);
   const [authorList, setAuthorList] = useState([]);
-  const [doiCheckState, setDoiCheckState] = useState(false);
-  const [titleCheckState, setTitleCheckState] = useState(false);
+  const [doiCheckState, setDoiCheckState] = useState(true);
+  const [titleCheckState, setTitleCheckState] = useState(true);
   const [similarDoisState, setSimilarDoisState] = useState([]);
   const [acceptModalVisible, setAcceptModalVisible] = useState(false);
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
-  const [rejectReason, setRejectReason] = useState(''); // 记录拒绝理由
+  const [rejectReason, setRejectReason] = useState('');
 
+  // 使用 useEffect 来从 API 获取文章详细信息
   useEffect(() => {
     if (id) {
       fetchArticleDetail(id);
     }
 
-    if (doiCheck !== undefined) {
-      setDoiCheckState(doiCheck === 'true');
-    }
-    if (titleCheck !== undefined) {
-      setTitleCheckState(titleCheck === 'true');
-    }
     if (similarDois) {
       setSimilarDoisState(similarDois.split(','));
     }
@@ -39,23 +34,21 @@ function ArticleDetail() {
         console.error('Error parsing authors:', e);
       }
     }
-  }, [id, doiCheck, titleCheck, similarDois, authors]);
+  }, [id, similarDois, authors]);
+
 
   const fetchArticleDetail = async (articleId) => {
-    const articleData = {
-      title: 'AI in Medicine: Revolutionizing Healthcare',
-      abstract: 'This article explores the application of AI technologies in healthcare...',
-      submittedDate: '2024-09-12',
-      doi: '10.1234/ai-medicine-2024',
-      status: 'accepted', // 用于判断当前文章状态
-    };
-
-    setArticle(articleData);
+    try {
+      const response = await fetch(`/api/articles/${articleId}`); // 调用后端 API 获取文章数据 
+      if (!response.ok) {
+        throw new Error('Failed to fetch article details');
+      } const result = await response.json(); const articleData = result.data; // 如果 `doiCheck` 或 `titleCheck` 没有值，则设为 `true` 
+      setDoiCheckState(articleData.doiCheck !== undefined ? articleData.doiCheck : true); setTitleCheckState(articleData.titleCheck !== undefined ? articleData.titleCheck : true); setArticle(articleData); // 更新文章数据 
+    } catch (error) { console.error('Error fetching article details:', error); }
   };
-
   const handleAccept = () => {
     setAcceptModalVisible(true);
-    setTimeout(() => setAcceptModalVisible(false), 2000); // 2秒后自动关闭提示
+    setTimeout(() => setAcceptModalVisible(false), 2000);
   };
 
   const handleReject = () => {
@@ -77,7 +70,15 @@ function ArticleDetail() {
       ) : (
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-full sm:col-span-6 xl:col-span-8">
-            <ArticleDetailCard title={article.title} abstract={article.abstract} submittedDate={article.submittedDate} doi={article.doi} />
+            {/* 传递所有文章数据到 ArticleDetailCard */}
+            <ArticleDetailCard
+              title={article.title}
+              abstract={article.abstract}
+              submittedDate={new Date(article.createdAt).toLocaleDateString()}  // 使用 createdAt 作为提交日期
+              doi={article.doi}
+              journal={article.journal}  // 新增的 journal 字段
+              year={article.year}        // 新增的 year 字段
+            />
           </div>
 
           <div className="col-span-full sm:col-span-6 xl:col-span-4">
@@ -88,20 +89,13 @@ function ArticleDetail() {
             <CheckStatusCard doiCheck={doiCheckState} titleCheck={titleCheckState} similarDois={similarDoisState} />
           </div>
 
-          {/* 按钮和状态显示区 */}
           <div className="col-span-full text-center mt-4">
             {article.status === 'pending' ? (
               <div>
-                <button
-                  className="bg-green-500 text-white px-4 py-2 rounded-md mr-4"
-                  onClick={handleAccept}
-                >
+                <button className="bg-green-500 text-white px-4 py-2 rounded-md mr-4" onClick={handleAccept}>
                   Accept
                 </button>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded-md"
-                  onClick={handleReject}
-                >
+                <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={handleReject}>
                   Reject
                 </button>
               </div>
@@ -112,22 +106,18 @@ function ArticleDetail() {
             )}
           </div>
 
-          {/* 接受弹窗 */}
+          {/* 接受和拒绝弹窗的逻辑保持不变 */}
           {acceptModalVisible && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white p-6 rounded-lg shadow-lg text-center">
                 <h2 className="text-xl font-bold mb-4">Article has been accepted!</h2>
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                  onClick={() => setAcceptModalVisible(false)}
-                >
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={() => setAcceptModalVisible(false)}>
                   Close
                 </button>
               </div>
             </div>
           )}
 
-          {/* 拒绝弹窗 */}
           {rejectModalVisible && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -139,16 +129,10 @@ function ArticleDetail() {
                   onChange={(e) => setRejectReason(e.target.value)}
                 ></textarea>
                 <div className="flex justify-end">
-                  <button
-                    className="bg-red-500 text-white px-4 py-2 rounded-md mr-4"
-                    onClick={submitRejectReason}
-                  >
+                  <button className="bg-red-500 text-white px-4 py-2 rounded-md mr-4" onClick={submitRejectReason}>
                     Submit
                   </button>
-                  <button
-                    className="bg-gray-500 text-white px-4 py-2 rounded-md"
-                    onClick={() => setRejectModalVisible(false)}
-                  >
+                  <button className="bg-gray-500 text-white px-4 py-2 rounded-md" onClick={() => setRejectModalVisible(false)}>
                     Cancel
                   </button>
                 </div>

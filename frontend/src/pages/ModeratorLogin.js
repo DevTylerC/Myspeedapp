@@ -1,25 +1,50 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';  // 导入 useRouter 来进行跳转
+import { useRouter } from 'next/router';
 
-const ReviewerLogin = () => {
+const ModeratorLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter();  // 初始化 router
+  const [errorMessage, setErrorMessage] = useState(''); // State to track error messages
+  const router = useRouter();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // 假设这里执行了一些验证逻辑，如果验证成功
-    console.log('Logging in as Reviewer:', { email, password });
 
-    // 跳转到审稿人 Dashboard
-    router.push('/ModeratorDashboard');
+    const loginData = {
+      email,
+      password,
+      role: 'moderator', // Add role for moderator
+    };
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token); // 保存 JWT token
+        setErrorMessage(''); // Clear any previous error messages
+
+        // Redirect to Moderator Dashboard
+        router.push('/ModeratorDashboard'); 
+      } else {
+        const data = await response.json();
+        setErrorMessage(data.message); // Set error message from response
+      }      
+    } catch (error) {
+      setErrorMessage('An unexpected error occurred. Please try again.');
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-100">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold text-center mb-4">Moderator Login</h1>
-        <p className="text-center mb-6">Log in to moderate submitted papers.</p>
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
@@ -45,6 +70,9 @@ const ReviewerLogin = () => {
               placeholder="Enter your password"
             />
           </div>
+          {errorMessage && (
+            <p className="text-red-500 text-sm mb-4">{errorMessage}</p> // Display error message
+          )}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
@@ -57,4 +85,4 @@ const ReviewerLogin = () => {
   );
 };
 
-export default ReviewerLogin;
+export default ModeratorLogin;
