@@ -1,9 +1,8 @@
-import React from 'react';
 import ArticleCard from '../components/ArticleCard';
 
 const Search = () => {
   const articles = [
-    { title: 'Research Paper on AI12', author: 'John Doe', keywords: 'AI, Machine Learning', submissionDate: '2024-09-01', type: 'Research Paper', link: '1' },
+    { title: 'Research Paper on AI', author: 'John Doe', keywords: 'AI, Machine Learning', submissionDate: '2024-09-01', type: 'Research Paper', link: '1' },
     { title: 'Case Study on Cloud Computing', author: 'Jane Smith', keywords: 'Cloud, AWS, Azure', submissionDate: '2024-09-02', type: 'Case Study', link: '2' },
     { title: 'Review on Cybersecurity Trends', author: 'Michael Lee', keywords: 'Cybersecurity, Trends, 2024', submissionDate: '2024-09-03', type: 'Review Article', link: '3' },
     { title: 'Experiment Report on Quantum Computing', author: 'Sara Connor', keywords: 'Quantum, Computing, Experiments', submissionDate: '2024-09-04', type: 'Experiment Report', link: '4' },
