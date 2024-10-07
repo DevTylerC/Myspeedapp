@@ -16,7 +16,7 @@ on:
 
 jobs:
   Deploy-Production:
-    if: github.event.pull_request.merged == true
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
