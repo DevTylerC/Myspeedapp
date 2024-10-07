@@ -5,10 +5,14 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
-  pull_request:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: ["GitHub Actions Test"]  # 替换为你 test.yml 中的工作流名称
     types:
-      - closed
+      - completed
+  # pull_request:
+  #   branches: [ "main" ]
+  #   types:
+  #     - closed
 
 jobs:
   Deploy-Production:
