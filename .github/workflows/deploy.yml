@@ -1,0 +1,30 @@
+name: GitHub Actions Vercel Deploy
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+on:
+  workflow_run:
+    workflows: ["GitHub Actions Test"]  # 替换为你 test.yml 中的工作流名称
+    types:
+      - completed
+  # pull_request:
+  #   branches: [ "main" ]
+  #   types:
+  #     - closed
+
+jobs:
+  Deploy-Production:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.MYSPEEDAPP107 }}
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.MYSPEEDAPP107 }}
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.MYSPEEDAPP107 }}
