@@ -11,7 +11,7 @@ const Search = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-center mb-6">Search Results</h1>
+      <h1 className="text-3xl font-bold text-center mb-6">Search Results1</h1>
       <div className="grid grid-cols-12 gap-6">
         {articles.map((article, index) => (
           <ArticleCard
