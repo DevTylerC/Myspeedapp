@@ -9,8 +9,8 @@ function ArticleDetail() {
   const { id, doiCheck, titleCheck, similarDois, authors } = router.query;
   const [article, setArticle] = useState(null);
   const [authorList, setAuthorList] = useState([]);
-  const [doiCheckState, setDoiCheckState] = useState(true);
-  const [titleCheckState, setTitleCheckState] = useState(true);
+  const [doiCheckState, setDoiCheckState] = useState(false);
+  const [titleCheckState, setTitleCheckState] = useState(false);
   const [similarDoisState, setSimilarDoisState] = useState([]);
   const [acceptModalVisible, setAcceptModalVisible] = useState(false);
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
@@ -22,6 +22,12 @@ function ArticleDetail() {
       fetchArticleDetail(id);
     }
 
+    if (doiCheck !== undefined) {
+      setDoiCheckState(doiCheck === 'true');
+    }
+    if (titleCheck !== undefined) {
+      setTitleCheckState(titleCheck === 'true');
+    }
     if (similarDois) {
       setSimilarDoisState(similarDois.split(','));
     }
@@ -34,22 +40,71 @@ function ArticleDetail() {
         console.error('Error parsing authors:', e);
       }
     }
-  }, [id, similarDois, authors]);
-
+  }, [id, doiCheck, titleCheck, similarDois, authors]);
 
   const fetchArticleDetail = async (articleId) => {
     try {
-      const response = await fetch(`/api/articles/${articleId}`); // 调用后端 API 获取文章数据 
+      const response = await fetch(`/api/articles/${articleId}`);  // 调用后端 API
       if (!response.ok) {
         throw new Error('Failed to fetch article details');
-      } const result = await response.json(); const articleData = result.data; // 如果 `doiCheck` 或 `titleCheck` 没有值，则设为 `true` 
-      setDoiCheckState(articleData.doiCheck !== undefined ? articleData.doiCheck : true); setTitleCheckState(articleData.titleCheck !== undefined ? articleData.titleCheck : true); setArticle(articleData); // 更新文章数据 
-    } catch (error) { console.error('Error fetching article details:', error); }
+      }
+      const result = await response.json();
+      setArticle(result.data);  // 更新文章数据
+    } catch (error) {
+      console.error('Error fetching article details:', error);
+    }
   };
-  const handleAccept = () => {
+
+  const handleAccept = async () => {
     setAcceptModalVisible(true);
+  
+    if (article) {
+      const acceptedArticleData = {
+        title: article.title,
+        authors: article.authors,
+        journal: article.journal,
+        year: article.year,
+        doi: article.doi,
+        abstract: article.abstract,
+        keywords: article.keywords,
+        status: 'UnAnalyzed',
+        researchMethod: 'Experiment',
+        participants: '50 participants',
+        supportsPractice: 'Yes',
+        conclusion: 'Promising results',
+      };
+  
+      try {
+        const response = await fetch('/api/articles/acceptedArticles', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(acceptedArticleData),
+        });
+      
+        // Log the entire response object
+        console.log('Response:', response);
+      
+        const result = await response.json();
+        console.log('API response:', result);
+      
+        if (response.ok) {
+          alert('Article accepted and moved to Accepted Articles!');
+          setArticle({ ...article, status: 'approved' });
+        } else {
+          throw new Error(result.error || 'Failed to accept article');
+        }
+      } catch (error) {
+        console.error('Error accepting article:', error);
+      }
+      
+    }
+  
     setTimeout(() => setAcceptModalVisible(false), 2000);
   };
+  
+  
 
   const handleReject = () => {
     setRejectModalVisible(true);
