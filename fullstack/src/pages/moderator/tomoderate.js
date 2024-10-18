@@ -9,7 +9,7 @@ const ToReview = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch('/api/articles');
+        const response = await fetch('/api/articles?status=pending'); // 添加查询参数 status=pending
         if (!response.ok) {
           throw new Error('Failed to fetch articles');
         }
@@ -23,6 +23,7 @@ const ToReview = () => {
     };
     fetchArticles();
   }, []);
+
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">

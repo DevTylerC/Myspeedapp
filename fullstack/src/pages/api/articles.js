@@ -82,18 +82,50 @@ export default async function handler(req, res) {
         res.status(500).json({ success: false, message: 'Failed to submit article', error });
       }
     }
-  } else if (req.method === 'GET') {
+  } 
+  else if (req.method === 'GET') {
+    const { status } = req.query; // 从请求查询参数中获取 status
+    
+    // 检查是否存在多个状态值
+    const statusArray = status ? status.split(',') : []; // 将状态值转换为数组
+  
     try {
-      // Retrieve articles with 'pending' status
-      const pendingArticles = await Article.find({ status: 'pending' }).select(
+      // 使用 $in 运算符过滤文章
+      const articles = await Article.find({ status: { $in: statusArray } }).select(
         'title authors journal year doi abstract keywords status createdAt'
       );
-      res.status(200).json({ success: true, data: pendingArticles });
+      res.status(200).json({ success: true, data: articles });
     } catch (error) {
       console.error('Error fetching articles:', error);
       res.status(500).json({ success: false, message: 'Failed to fetch articles', error });
     }
-  }
+  }  
+  else if (req.method === 'PUT') {
+    const { id } = req.body; // 获取文章 ID
+    const { status } = req.body; // 获取要更新的 status
+
+    try {
+      // 更新文章状态
+      const updatedArticle = await Article.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true, runValidators: true } // 返回更新后的文档，并验证数据
+      );
+
+      if (!updatedArticle) {
+        return res.status(404).json({ success: false, message: 'Article not found' });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Article status updated successfully',
+        data: updatedArticle,
+      });
+    } catch (error) {
+      console.error('Error updating article status:', error);
+      res.status(500).json({ success: false, message: 'Failed to update article status', error });
+    }
+  } 
   else {
     res.status(405).json({ message: 'Method not allowed' });
   }

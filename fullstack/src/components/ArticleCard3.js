@@ -3,8 +3,8 @@ import React from 'react';
 function ArticleCard3({ title, authors, keywords, submissionDate, researchMethod, participants, supportsPractice, conclusion, link }) {
   
   // 根据研究方法返回不同的颜色样式
-  const methodColor = (method) => {
-    switch (method) {
+  const methodColor = (researchMethod) => {
+    switch (researchMethod) {
       case 'Experiment':
         return 'bg-blue-500 text-white';
       case 'Case Study':

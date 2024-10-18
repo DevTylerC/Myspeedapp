@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusion, status, onSave }) => {
+const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusion, status, id }) => {
   // 用于输入的状态变量
   const [method, setMethod] = useState(researchMethod || '');
   const [participantType, setParticipantType] = useState(participants || '');
@@ -15,6 +15,34 @@ const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusi
       setConclusionText(conclusion);
     }
   }, [status, researchMethod, participants, supportsPractice, conclusion]);
+
+  const handleSaveAnalysis = async () => {
+    try {
+      const response = await fetch(`/api/acceptedArticles/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          researchMethod: method,
+          status: 'Analyzed',
+          participants: participantType,
+          supportsPractice: practiceSupport,
+          conclusion: conclusionText,
+        }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert("Analysis saved successfully!");
+      } else {
+        alert("Failed to save analysis.");
+      }
+    } catch (error) {
+      console.error("Error saving analysis:", error);
+    }
+  };
+  
+  
 
   return (
     <div className="p-4 border rounded shadow bg-white mb-4">
@@ -97,7 +125,7 @@ const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusi
           {/* 保存按钮 */}
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-md"
-            onClick={() => onSave({ method, participantType, practiceSupport, conclusionText })}
+            onClick={handleSaveAnalysis} 
           >
             Save Analysis
           </button>

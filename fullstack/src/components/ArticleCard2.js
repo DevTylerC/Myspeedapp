@@ -5,7 +5,7 @@ function ArticleCard({ title, authors, keywords, submissionDate, status, link })
 
   const statusColor = (status) => {
     switch (status) {
-      case 'accepted':
+      case 'approved':
         return 'bg-green-500 text-white';
       case 'rejected':
         return 'bg-red-500 text-white';

@@ -32,22 +32,16 @@ function ArticleDetail() {
   }, [id, authors]);
 
   const fetchArticleDetail = async (articleId) => {
-    // 模拟文章详情数据
-    const articleData = {
-      title: 'AI in Medicine: Revolutionizing Healthcare',
-      abstract: 'This article explores the application of AI technologies in healthcare...',
-      submittedDate: '2024-09-12',
-      doi: '10.1234/ai-medicine-2024',
-      status: 'UnAnalyzed', // 模拟文章状态：未分析
-    };
-
-    setArticle(articleData);
-  };
-
-  const handleSaveAnalysis = (analysisValues) => {
-    setAnalysisData(analysisValues);
-    setArticle({ ...article, status: 'Analyzed' });
-    alert('Analysis data saved successfully!');
+    try {
+      const response = await fetch(`/api/acceptedArticles/${articleId}`);  // 调用后端 API
+      if (!response.ok) {
+        throw new Error('Failed to fetch article details');
+      }
+      const result = await response.json();
+      setArticle(result.data);  // 更新文章数据
+    } catch (error) {
+      console.error('Error fetching article details:', error);
+    }
   };
 
   return (
@@ -65,7 +59,9 @@ function ArticleDetail() {
             <ArticleDetailCard
               title={article.title}
               abstract={article.abstract}
-              submittedDate={article.submittedDate}
+              submittedDate={new Date(article.createdAt).toLocaleDateString()} 
+              journal={article.journal}        // Add this line
+              year={article.year}              // Add this line
               doi={article.doi}
             />
           </div>
@@ -78,12 +74,12 @@ function ArticleDetail() {
           {/* 分析详情卡片 */}
           <div className="col-span-full">
             <AnalysisCard
-              researchMethod={analysisData.researchMethod}
-              participants={analysisData.participants}
-              supportsPractice={analysisData.supportsPractice}
-              conclusion={analysisData.conclusion}
+              researchMethod={article.researchMethod}
+              participants={article.participants}
+              supportsPractice={article.supportsPractice}
+              conclusion={article.conclusion}
               status={article.status}
-              onSave={handleSaveAnalysis}
+              id = {id}
             />
           </div>
         </div>

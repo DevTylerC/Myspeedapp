@@ -57,7 +57,7 @@ function ArticleDetail() {
 
   const handleAccept = async () => {
     setAcceptModalVisible(true);
-  
+
     if (article) {
       const acceptedArticleData = {
         title: article.title,
@@ -68,13 +68,14 @@ function ArticleDetail() {
         abstract: article.abstract,
         keywords: article.keywords,
         status: 'UnAnalyzed',
-        researchMethod: 'Experiment',
-        participants: '50 participants',
-        supportsPractice: 'Yes',
-        conclusion: 'Promising results',
+        researchMethod: 'Wait for analyzing',
+        participants: 'Wait for analyzing',
+        supportsPractice: 'Wait for analyzing',
+        conclusion: 'Wait for analyzing',
       };
-  
+
       try {
+        // Step 1: Save the accepted article
         const response = await fetch('/api/articles/acceptedArticles', {
           method: 'POST',
           headers: {
@@ -82,37 +83,129 @@ function ArticleDetail() {
           },
           body: JSON.stringify(acceptedArticleData),
         });
-      
-        // Log the entire response object
-        console.log('Response:', response);
-      
+
         const result = await response.json();
-        console.log('API response:', result);
-      
+
         if (response.ok) {
-          alert('Article accepted and moved to Accepted Articles!');
-          setArticle({ ...article, status: 'approved' });
+          // Step 2: Send emails to Analyst and Author
+          try {
+            const emailResponse = await fetch('/api/notifications/sendEmail', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                recipients: [
+                  'jingzhaopiao@gmail.com',
+                  ...article.authors.map(author => author.email)
+                ],
+                subject: `New Article Accepted: ${article.title}`,
+                message: `The article "${article.title}" has been accepted and is ready for analysis.`,
+              }),
+            });
+
+            if (emailResponse.ok) {
+              console.log('Emails sent successfully.');
+            } else {
+              throw new Error('Failed to send emails');
+            }
+          } catch (emailError) {
+            console.error('Error sending emails:', emailError);
+          }
+
+          // Step 3: Update the article status to 'approved'
+          const updateStatus = async () => {
+            try {
+              const updateResponse = await fetch('/api/articles', {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: article._id, status: 'approved' }),
+              });
+
+              if (updateResponse.ok) {
+                const result = await updateResponse.json();
+                console.log('Article status updated successfully:', result);
+                setArticle({ ...article, status: 'approved' });
+              } else {
+                throw new Error('Failed to update article status');
+              }
+            } catch (error) {
+              console.error('Error updating article status:', error);
+              alert('There was an issue updating the article status.');
+            }
+          };
+
+          updateStatus();
         } else {
           throw new Error(result.error || 'Failed to accept article');
         }
       } catch (error) {
         console.error('Error accepting article:', error);
       }
-      
     }
-  
+
     setTimeout(() => setAcceptModalVisible(false), 2000);
   };
-  
-  
 
   const handleReject = () => {
+
     setRejectModalVisible(true);
+
+
   };
 
   const submitRejectReason = () => {
     setRejectModalVisible(false);
-    alert(`Article Rejected with reason: ${rejectReason}`);
+    // Update the article status to 'rejected'
+    const rejectStatus = async () => {
+      try {
+        const updateResponse = await fetch('/api/articles', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: article._id, status: 'rejected' }), // Pass article ID and new status
+        });
+
+        if (updateResponse.ok) {
+          const result = await updateResponse.json();
+          console.log('Article status updated successfully:', result);
+          setArticle({ ...article, status: 'rejected' });
+
+          // Send email to the Author only
+          try {
+            const emailResponse = await fetch('/api/notifications/sendEmail', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                recipients: [article.authors[0].email],
+                subject: `Your Article "${article.title}" has been Rejected`,
+                message: `Dear ${article.authors[0].name},\n\nYour article titled "${article.title}" has been rejected for the following reason: ${rejectReason}\n\n\nThank you for your submission.`,     
+              }),
+            });
+
+            if (emailResponse.ok) {
+              console.log('Email sent successfully to the author.');
+            } else {
+              throw new Error('Failed to send email');
+            }
+          } catch (error) {
+            console.error('Error sending email:', error);
+          }
+
+        } else {
+          throw new Error('Failed to update article status');
+        }
+      } catch (error) {
+        console.error('Error updating article status:', error);
+      }
+    };
+
+    rejectStatus();
   };
 
   return (
@@ -155,8 +248,8 @@ function ArticleDetail() {
                 </button>
               </div>
             ) : (
-              <p className={`font-bold ${article.status === 'accepted' ? 'text-green-600' : 'text-red-600'}`}>
-                {article.status === 'accepted' ? 'Accepted' : 'Rejected'}
+              <p className={`font-bold ${article.status === 'approved' ? 'text-green-600' : 'text-red-600'}`}>
+                {article.status === 'approved' ? 'Accepted' : 'Rejected'}
               </p>
             )}
           </div>
@@ -181,7 +274,7 @@ function ArticleDetail() {
                   className="border border-gray-300 rounded w-full p-2 mb-4"
                   rows="4"
                   value={rejectReason}
-                  onChange={(e) => setRejectReason(e.target.value)}
+                  onChange={(e) => setRejectReason(e.target.value)} //理由发给Author --邮件
                 ></textarea>
                 <div className="flex justify-end">
                   <button className="bg-red-500 text-white px-4 py-2 rounded-md mr-4" onClick={submitRejectReason}>

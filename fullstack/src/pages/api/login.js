@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+// Load environment variables
+dotenv.config({ path: '.env.local' });
 // 处理登录请求的 API 路由
 export default async function handler(req, res) {
     if (req.method === 'POST') {
@@ -24,8 +27,8 @@ export default async function handler(req, res) {
   async function checkUserCredentials(email, password, role) {
     // 假设你有一组硬编码的用户数据
     const users = [
-      { email: 'analyst@example.com', password: 'password123', role: 'analyst' },
-      { email: 'moderator@example.com', password: 'password123', role: 'moderator' }
+      { email: 'analyst@autuni.ac.nz', password: process.env.LOGIN_PASS, role: 'analyst' },
+      { email: 'moderator@autuni.ac.nz', password: process.env.LOGIN_PASS, role: 'moderator' }
     ];
   
     // 验证用户的 email, password 和 role

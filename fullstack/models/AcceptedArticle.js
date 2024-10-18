@@ -1,4 +1,3 @@
-// models/AcceptedArticle.js
 import mongoose from 'mongoose';
 
 const AcceptedArticleSchema = new mongoose.Schema({
