@@ -14,8 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
-        working-directory: ./frontend  # 指定工作目录
+        working-directory: ./fullstack  # 指定工作目录
         run: npm install
       - name: Run test
-        working-directory: ./frontend  # 指定工作目录
+        working-directory: ./fullstack  # 指定工作目录
         run: npm run test:ci
