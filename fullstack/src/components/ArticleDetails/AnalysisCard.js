@@ -41,8 +41,8 @@ const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusi
       console.error("Error saving analysis:", error);
     }
   };
-  
-  
+
+
 
   return (
     <div className="p-4 border rounded shadow bg-white mb-4">
@@ -103,10 +103,14 @@ const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusi
               className="w-full p-2 border border-gray-300 rounded"
               required
             >
-              <option value="" disabled>Select Support Status</option>
-              <option value="Support">Support</option>
-              <option value="Against">Against</option>
-              <option value="Neutral">Neutral</option>
+              <option value="" disabled>Select SE Method</option>
+              <option value="Agile Development">Agile Development</option>
+              <option value="Waterfall Model">Waterfall Model</option>
+              <option value="DevOps">DevOps</option>
+              <option value="Test-Driven Development">Test-Driven Development</option>
+              <option value="Continuous Integration">Continuous Integration</option>
+              <option value="Pair Programming">Pair Programming</option>
+              <option value="Scrum">Scrum</option>
             </select>
           </div>
 
@@ -125,7 +129,7 @@ const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusi
           {/* 保存按钮 */}
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-md"
-            onClick={handleSaveAnalysis} 
+            onClick={handleSaveAnalysis}
           >
             Save Analysis
           </button>

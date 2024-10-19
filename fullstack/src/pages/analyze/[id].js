@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import ArticleDetailCard from '../../components/ArticleDetails/ArticleDetailCard';
 import AuthorCard from '../../components/ArticleDetails/AuthorCard';
 import AnalysisCard from '../../components/ArticleDetails/AnalysisCard'; // 引入 AnalysisCard
+import ReviewCard from '../../components/ReviewCard';
 import { useState, useEffect } from 'react';
 
 function ArticleDetail() {
@@ -82,6 +83,12 @@ function ArticleDetail() {
               id = {id}
             />
           </div>
+          {/* 打分卡片：仅在 article.status 为 "Analyzed" 时显示 */}
+          {article.status === 'Analyzed' && (
+            <div className="col-span-full">
+              <ReviewCard articleId={id} />
+            </div>
+          )}
         </div>
       )}
     </div>

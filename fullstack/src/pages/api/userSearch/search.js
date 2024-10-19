@@ -4,7 +4,7 @@ import AcceptedArticle from '../../../../models/AcceptedArticle';
 export default async function handler(req, res) {
   await dbConnect();
 
-  const { title, authorName, journal, doi, keywords, simpleSearch } = req.query;
+  const { title, authorName, yearStart, yearEnd, seMethod, simpleSearch } = req.query;
   const filter = { status: 'Analyzed' }; // 只包括状态为 'Analyzed' 的文章
 
   if (simpleSearch) {
@@ -12,8 +12,7 @@ export default async function handler(req, res) {
     filter.$or = [
       { title: regex },
       { authors: { $elemMatch: { name: regex } } }, // 作者名
-      { journal: regex },
-      { doi: regex },
+      { supportsPractice: regex }, // 修改此处以匹配SE方法
       { keywords: regex }
     ];
   } else {
@@ -26,16 +25,14 @@ export default async function handler(req, res) {
       filter.authors = { $elemMatch: { name: { $regex: authorName, $options: 'i' } } };
     }
 
-    if (journal) {
-      filter.journal = { $regex: journal, $options: 'i' };
+    // 新增：根据年份范围过滤
+    if (yearStart && yearEnd) {
+      filter.createdAt = { $gte: new Date(`${yearStart}-01-01`), $lte: new Date(`${yearEnd}-12-31`) };
     }
 
-    if (doi) {
-      filter.doi = { $regex: doi, $options: 'i' };
-    }
-
-    if (keywords) {
-      filter.keywords = { $regex: keywords, $options: 'i' };
+    // 新增：根据 SE 方法过滤
+    if (seMethod) {
+      filter.supportsPractice = { $regex: seMethod, $options: 'i' };
     }
   }
 
