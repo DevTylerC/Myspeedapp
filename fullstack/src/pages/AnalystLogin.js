@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 const AnalystLogin = () => {
   const [email, setEmail] = useState('');
@@ -55,7 +55,7 @@ const AnalystLogin = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full p-2 border rounded-lg"
-              placeholder="Enter your email"
+              placeholder="Enter your email (analyst@autuni.ac.nz)"
             />
           </div>
           <div className="mb-6">
@@ -67,7 +67,7 @@ const AnalystLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               className="w-full p-2 border rounded-lg"
-              placeholder="Enter your password"
+              placeholder="Enter your password (admin)"
             />
           </div>
           {errorMessage && (
