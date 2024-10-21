@@ -1,19 +1,19 @@
 import { useState } from 'react';
-import Search from './search';  // 导入 Search 组件
-import Submit from './submit';  // 导入 Submit 组件
-import Intro from './intro';  // 导入 Intro 组件
+import Intro from './intro'; // Import Intro component
+import Search from './search'; // Import Search component
+import Submit from './submit'; // Import Submit component
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState('Search'); // 默认显示SPEED简介
+  const [activeTab, setActiveTab] = useState('Search'); // Display SPEED introduction by default
 
   const renderContent = () => {
     switch (activeTab) {
       case 'Intro':
-        return <Intro />; // 调用外部 Intro 组件
+        return <Intro />; // Render external Intro component
       case 'Search':
-        return <Search />; // 调用外部 Search 组件
+        return <Search />; // Render external Search component
       case 'Upload':
-        return <Submit />; // 调用外部 Submit 组件
+        return <Submit />; // Render external Submit component
       default:
         return null;
     }
@@ -23,7 +23,7 @@ const Home = () => {
     <div className="p-6 bg-blue-100 min-h-screen"> 
       <h1 className="text-2xl font-bold mb-4 text-center">SPEED</h1>
 
-      {/* 切换按钮 */}
+      {/* Toggle buttons */}
       <div className="flex justify-center mb-6">
         <div className="flex flex-wrap -space-x-px w-1/2"> 
           <button

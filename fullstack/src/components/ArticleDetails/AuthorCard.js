@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const AuthorCard = ({ authors }) => {
   const [currentAuthorIndex, setCurrentAuthorIndex] = useState(0);
@@ -14,9 +14,9 @@ const AuthorCard = ({ authors }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mb-6">
       <h3 className="text-lg font-bold mb-2">Author Information</h3>
-      {/* 显示作者名字 */}
+      {/* Display author name */}
       <p><strong>Name:</strong> {authors[currentAuthorIndex]?.name || 'No name available'}</p>
-      {/* 显示作者邮箱 */}
+      {/* Display author email */}
       <p><strong>Email:</strong> {authors[currentAuthorIndex]?.email || 'No email available'}</p>
       
       <div className="flex justify-between mt-4">

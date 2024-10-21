@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import Banner from '../components/Banner';  // 导入 Banner 组件
+import Banner from '../components/Banner'; // Import Banner component
 
 const Submit = () => {
   const [formData, setFormData] = useState({
     title: '',
-    authors: [{ name: '', email: '' }], // 初始只有一个author
+    authors: [{ name: '', email: '' }], // Initially, there is only one author
     journal: '',
     year: '',
     doi: '',
@@ -13,10 +13,9 @@ const Submit = () => {
   });
 
   const [submitted, setSubmitted] = useState(false);
-  const [openBanner, setOpenBanner] = useState(false);  // 控制 Banner 显示
-  const [bannerType, setBannerType] = useState('');  // 控制 Banner 类型
-  const [bannerMessage, setBannerMessage] = useState('');  // 控制 Banner 内容
-
+  const [openBanner, setOpenBanner] = useState(false);  // Control the display of the Banner
+  const [bannerType, setBannerType] = useState('');  // Control the type of the Banner
+  const [bannerMessage, setBannerMessage] = useState('');  // Control the content of the Banner
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -86,7 +85,7 @@ const Submit = () => {
     <div className="p-6 bg-white rounded-lg shadow-lg">
       <h1 className="text-2xl font-bold mb-4">Submit an Article</h1>
 
-      {/* Banner 组件 */}
+      {/* Banner component */}
       <Banner type={bannerType} open={openBanner} setOpen={setOpenBanner}>
         {bannerMessage}
       </Banner>

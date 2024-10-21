@@ -1,6 +1,6 @@
+import nodemailer from 'nodemailer';
 import dbConnect from '../../../lib/dbConnect';
 import Article from '../../../models/Articles';
-import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -84,13 +84,13 @@ export default async function handler(req, res) {
     }
   } 
   else if (req.method === 'GET') {
-    const { status } = req.query; // 从请求查询参数中获取 status
+    const { status } = req.query; // Get status from request query parameters
     
-    // 检查是否存在多个状态值
-    const statusArray = status ? status.split(',') : []; // 将状态值转换为数组
+    // Check if there are multiple status values
+    const statusArray = status ? status.split(',') : []; // Convert status value to an array
   
     try {
-      // 使用 $in 运算符过滤文章
+      // Use the $in operator to filter articles
       const articles = await Article.find({ status: { $in: statusArray } }).select(
         'title authors journal year doi abstract keywords status createdAt'
       );
@@ -101,15 +101,15 @@ export default async function handler(req, res) {
     }
   }  
   else if (req.method === 'PUT') {
-    const { id } = req.body; // 获取文章 ID
-    const { status } = req.body; // 获取要更新的 status
+    const { id } = req.body; // Get article ID
+    const { status } = req.body; // Get the updated status
 
     try {
-      // 更新文章状态
+      // Update article status
       const updatedArticle = await Article.findByIdAndUpdate(
         id,
         { status },
-        { new: true, runValidators: true } // 返回更新后的文档，并验证数据
+        { new: true, runValidators: true } // Return the updated document and validate data
       );
 
       if (!updatedArticle) {

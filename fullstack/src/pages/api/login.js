@@ -1,37 +1,37 @@
 import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config({ path: '.env.local' });
-// 处理登录请求的 API 路由
+// API route for handling login requests
 export default async function handler(req, res) {
     if (req.method === 'POST') {
       const { email, password, role } = req.body;
   
-      // 在这里验证用户的 email 和 password，以及他们的角色
+      // Validate the user's email and password along with their role here
       const validUser = await checkUserCredentials(email, password, role);
   
       if (validUser) {
-        // 验证成功，返回登录成功的信息
+        // If validation succeeds, return login success message
         return res.status(200).json({ message: 'Login successful', role });
       } else {
-        // 如果凭据无效，返回 401 错误
+        // If credentials are invalid, return a 401 error
         return res.status(401).json({ message: 'Invalid email or password' });
       }
     } else {
-      // 如果不是 POST 请求，返回 405 错误
+      // If the request is not a POST request, return a 405 error
       res.setHeader('Allow', ['POST']);
       res.status(405).end(`Method ${req.method} Not Allowed`);
     }
   }
   
-  // 例子：验证用户凭据，使用数据库逻辑代替此处的示例代码
+  // Example: Validate user credentials, replace this sample code with database logic
   async function checkUserCredentials(email, password, role) {
-    // 假设你有一组硬编码的用户数据
+    // Assume you have a set of hardcoded user data
     const users = [
       { email: 'analyst@autuni.ac.nz', password: process.env.LOGIN_PASS, role: 'analyst' },
       { email: 'moderator@autuni.ac.nz', password: process.env.LOGIN_PASS, role: 'moderator' }
     ];
   
-    // 验证用户的 email, password 和 role
+    // Validate the user's email, password, and role
     const user = users.find(user => user.email === email && user.password === password && user.role === role);
   
     return user ? true : false;

@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import ToAnalyze from './analyst/ToAnalyze'; // 引入 ToAnalyze 组件
-import Analyzed from './analyst/Analyzed';   // 引入 Analyzed 组件
+import Analyzed from './analyst/Analyzed'; // Import Analyzed component
+import ToAnalyze from './analyst/ToAnalyze'; // Import ToAnalyze component
 
 const AnalystDashboard = () => {
-  const [activeTab, setActiveTab] = useState('ToAnalyze'); // 默认选择 "ToAnalyze"
-
-  // 根据当前激活的 Tab 渲染不同的内容
+  const [activeTab, setActiveTab] = useState('ToAnalyze'); // Default selection is "ToAnalyze"
+  // Render different content based on the active Tab
   const renderContent = () => {
     switch (activeTab) {
       case 'ToAnalyze':
@@ -21,10 +20,10 @@ const AnalystDashboard = () => {
     <div className="p-6 bg-blue-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-4 text-center">Analyst Dashboard</h1>
 
-      {/* 切换按钮 */}
+      {/* Toggle buttons */}
       <div className="flex justify-center mb-6">
         <div className="flex flex-wrap -space-x-px w-1/2">
-          {/* ToAnalyze 按钮 */}
+          {/* ToAnalyze button */}
           <button
             className={`btn flex-1 text-center py-2 ${
               activeTab === 'ToAnalyze'
@@ -36,7 +35,7 @@ const AnalystDashboard = () => {
             To Analyze
           </button>
 
-          {/* Analyzed 按钮 */}
+          {/* Analyzed button */}
           <button
             className={`btn flex-1 text-center py-2 ${
               activeTab === 'Analyzed'
@@ -50,7 +49,7 @@ const AnalystDashboard = () => {
         </div>
       </div>
 
-      {/* 根据按钮切换显示不同的内容 */}
+      {/* Toggle display of different content based on button click */}
       <div className="mb-4">
         {renderContent()}
       </div>

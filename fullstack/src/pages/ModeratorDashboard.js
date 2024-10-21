@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import ToReview from './moderator/tomoderate';  // 导入 ToReview 组件
-import Reviewed from './moderator/moderated';  // 导入 Reviewed 组件
+import Reviewed from './moderator/moderated'; // Import Reviewed component
+import ToReview from './moderator/tomoderate'; // Import ToReview component
 
 const ReviewerDashboard = () => {
-  const [activeTab, setActiveTab] = useState('ToReview'); // 默认显示 ToReview
+  const [activeTab, setActiveTab] = useState('ToReview'); // Display ToReview by default
 
   const renderContent = () => {
     switch (activeTab) {
       case 'ToReview':
-        return <ToReview />; // 调用 ToReview 组件
+        return <ToReview />; // Render ToReview component
       case 'Reviewed':
-        return <Reviewed />; // 调用 Reviewed 组件
+        return <Reviewed />; // Render Reviewed component
       default:
         return null;
     }
@@ -20,7 +20,7 @@ const ReviewerDashboard = () => {
     <div className="p-6 bg-blue-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-4 text-center">Moderator Dashboard</h1>
 
-      {/* 切换按钮 */}
+      {/* Toggle buttons */}
       <div className="flex justify-center mb-6">
         <div className="flex flex-wrap -space-x-px w-1/2">
           <button
@@ -46,7 +46,7 @@ const ReviewerDashboard = () => {
         </div>
       </div>
 
-      {/* 根据按钮切换显示不同的内容 */}
+      {/* Toggle display of different content based on button click */}
       <div className="mb-4">
         {renderContent()}
       </div>

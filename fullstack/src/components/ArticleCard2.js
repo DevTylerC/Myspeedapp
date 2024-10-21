@@ -1,5 +1,3 @@
-import React from 'react';
-import Link from 'next/link';
 
 function ArticleCard({ title, authors, keywords, submissionDate, status, link }) {
 
@@ -16,10 +14,10 @@ function ArticleCard({ title, authors, keywords, submissionDate, status, link })
     }
   };
 
-  // 处理在新窗口中打开链接的函数，去除了 doiCheck 和 titleCheck
+  // Function to handle opening a link in a new window, excluding doiCheck and titleCheck
   const handleOpenInNewWindow = (e) => {
     e.preventDefault();
-    const authorString = encodeURIComponent(JSON.stringify(authors)); // 将多个作者信息编码成字符串
+    const authorString = encodeURIComponent(JSON.stringify(authors)); // Encode multiple author information into a string
     const url = `/moderate/${link}?authors=${authorString}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
@@ -37,14 +35,14 @@ function ArticleCard({ title, authors, keywords, submissionDate, status, link })
           </div>
         </header>
         <div className="grow mt-2">
-          {/* 修改为展示多个作者的名字或其他信息 */}
+          {/* Modified to display multiple authors' names or other information */}
           <h2
             className="text-xl leading-snug font-semibold text-slate-800 dark:text-slate-100 hover:text-slate-900 dark:hover:text-white mb-1 cursor-pointer"
             onClick={handleOpenInNewWindow}
           >
             {title}
           </h2>
-          {/* 渲染多个作者名字 */}
+          {/* Render multiple authors' names */}
           <div className="text-sm text-slate-500 dark:text-slate-400">
             {authors.map((author, index) => (
               <div key={index}>

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const ReviewCard = ({ articleId }) => {
-  const [rating, setRating] = useState(0); // 用户的评分
-  const [hoverRating, setHoverRating] = useState(0); // 悬停时的评分
-  const [averageRating, setAverageRating] = useState(0); // 平均评分
-  const [reviewCount, setReviewCount] = useState(0); // 评论数量
+  const [rating, setRating] = useState(0); // User's rating
+  const [hoverRating, setHoverRating] = useState(0); // Hover rating
+  const [averageRating, setAverageRating] = useState(0); // Average rating
+  const [reviewCount, setReviewCount] = useState(0); // Review count
 
   useEffect(() => {
-    // 获取当前文章的评分信息
+    // Fetch the rating information for the current article
     const fetchReviews = async () => {
       try {
         const response = await fetch(`/api/reviews/${articleId}`);
@@ -36,7 +36,7 @@ const ReviewCard = ({ articleId }) => {
       const data = await response.json();
       if (response.ok) {
         alert('Review submitted successfully!');
-        // 更新评论数据
+        // Update review data
         setRating(index);
         setReviewCount(reviewCount + 1);
         setAverageRating((averageRating * reviewCount + index) / (reviewCount + 1));
@@ -48,13 +48,13 @@ const ReviewCard = ({ articleId }) => {
     }
   };
 
-  const stars = Array(5).fill(0); // 创建星星数组
+  const stars = Array(5).fill(0); // Create an array of stars
 
   return (
     <div className="max-w-sm p-4 bg-white rounded-lg shadow-md">
       <h3 className="text-lg font-semibold mb-2">Rate this Article</h3>
 
-      {/* 显示星星 */}
+      {/* Display stars */}
       <div className="flex items-center space-x-1">
         {stars.map((_, index) => (
           <svg
@@ -66,9 +66,9 @@ const ReviewCard = ({ articleId }) => {
             } border border-blue-500`}
             fill="currentColor"
             stroke="currentColor"
-            onMouseEnter={() => setHoverRating(index + 1)} // 鼠标悬停改变评分
-            onMouseLeave={() => setHoverRating(0)} // 鼠标移开后恢复
-            onClick={() => handleRating(index + 1)} // 点击确定评分
+            onMouseEnter={() => setHoverRating(index + 1)} // Change rating on hover
+            onMouseLeave={() => setHoverRating(0)} // Reset after mouse leaves
+            onClick={() => handleRating(index + 1)} // Click to confirm rating
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
           >
@@ -77,7 +77,7 @@ const ReviewCard = ({ articleId }) => {
         ))}
       </div>
 
-      {/* 显示评论数和平均分 */}
+      {/* Display review count and average rating */}
       <div className="mt-2 text-gray-700">
         <span className="font-semibold text-lg">
           {hoverRating ? hoverRating : averageRating.toFixed(1)}

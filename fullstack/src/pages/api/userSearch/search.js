@@ -5,18 +5,17 @@ export default async function handler(req, res) {
   await dbConnect();
 
   const { title, authorName, yearStart, yearEnd, seMethod, simpleSearch } = req.query;
-  const filter = { status: 'Analyzed' }; // 只包括状态为 'Analyzed' 的文章
-
+  const filter = { status: 'Analyzed' }; // Only include articles with status 'Analyzed'
   if (simpleSearch) {
-    const regex = { $regex: simpleSearch, $options: 'i' }; // 不区分大小写
+    const regex = { $regex: simpleSearch, $options: 'i' }; // Case insensitive
     filter.$or = [
       { title: regex },
-      { authors: { $elemMatch: { name: regex } } }, // 作者名
-      { supportsPractice: regex }, // 修改此处以匹配SE方法
+      { authors: { $elemMatch: { name: regex } } }, // Author name
+      { supportsPractice: regex }, //  Modify this to match SE method
       { keywords: regex }
     ];
   } else {
-    // 高级搜索的过滤条件
+    // Filtering conditions for advanced search
     if (title) {
       filter.title = { $regex: title, $options: 'i' };
     }
@@ -25,12 +24,12 @@ export default async function handler(req, res) {
       filter.authors = { $elemMatch: { name: { $regex: authorName, $options: 'i' } } };
     }
 
-    // 新增：根据年份范围过滤
+    // Add: Filter based on year range
     if (yearStart && yearEnd) {
       filter.createdAt = { $gte: new Date(`${yearStart}-01-01`), $lte: new Date(`${yearEnd}-12-31`) };
     }
 
-    // 新增：根据 SE 方法过滤
+    // Add: Filter based on SE method
     if (seMethod) {
       filter.supportsPractice = { $regex: seMethod, $options: 'i' };
     }

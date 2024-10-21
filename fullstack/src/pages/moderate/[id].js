@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import ArticleDetailCard from '../../components/ArticleDetails/ArticleDetailCard';
 import AuthorCard from '../../components/ArticleDetails/AuthorCard';
 import CheckStatusCard from '../../components/ArticleDetails/CheckStatusCard';
@@ -16,7 +16,7 @@ function ArticleDetail() {
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
 
-  // 使用 useEffect 来从 API 获取文章详细信息
+  // Use useEffect to fetch article details from API
   useEffect(() => {
     if (id) {
       fetchArticleDetail(id);
@@ -44,12 +44,12 @@ function ArticleDetail() {
 
   const fetchArticleDetail = async (articleId) => {
     try {
-      const response = await fetch(`/api/articles/${articleId}`);  // 调用后端 API
+      const response = await fetch(`/api/articles/${articleId}`);  // Call the backend API
       if (!response.ok) {
         throw new Error('Failed to fetch article details');
       }
       const result = await response.json();
-      setArticle(result.data);  // 更新文章数据
+      setArticle(result.data);  // Update article data
     } catch (error) {
       console.error('Error fetching article details:', error);
     }
@@ -218,14 +218,14 @@ function ArticleDetail() {
       ) : (
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-full sm:col-span-6 xl:col-span-8">
-            {/* 传递所有文章数据到 ArticleDetailCard */}
+            {/* Pass all article data to ArticleDetailCard */}
             <ArticleDetailCard
               title={article.title}
               abstract={article.abstract}
-              submittedDate={new Date(article.createdAt).toLocaleDateString()}  // 使用 createdAt 作为提交日期
+              submittedDate={new Date(article.createdAt).toLocaleDateString()}  // Use createdAt as the submission date
               doi={article.doi}
-              journal={article.journal}  // 新增的 journal 字段
-              year={article.year}        // 新增的 year 字段
+              journal={article.journal}  // Newly added journal field
+              year={article.year}        // Newly added year field
             />
           </div>
 
@@ -254,7 +254,7 @@ function ArticleDetail() {
             )}
           </div>
 
-          {/* 接受和拒绝弹窗的逻辑保持不变 */}
+          {/* The logic for accept and reject modals remains unchanged */}
           {acceptModalVisible && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white p-6 rounded-lg shadow-lg text-center">
@@ -274,7 +274,7 @@ function ArticleDetail() {
                   className="border border-gray-300 rounded w-full p-2 mb-4"
                   rows="4"
                   value={rejectReason}
-                  onChange={(e) => setRejectReason(e.target.value)} //理由发给Author --邮件
+                  onChange={(e) => setRejectReason(e.target.value)} //Reason sent to the Author -- via email
                 ></textarea>
                 <div className="flex justify-end">
                   <button className="bg-red-500 text-white px-4 py-2 rounded-md mr-4" onClick={submitRejectReason}>

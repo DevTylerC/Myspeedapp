@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ArticleCard from '../../components/ArticleCard2';
 
 const Moderated = () => {
@@ -9,7 +9,7 @@ const Moderated = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch('/api/articles?status=approved,rejected'); // 添加查询参数 status=pending
+        const response = await fetch('/api/articles?status=approved,rejected'); // Add query parameter status=pending
         if (!response.ok) {
           throw new Error('Failed to fetch articles');
         }
@@ -41,7 +41,7 @@ const Moderated = () => {
                   title={article.title}
                   authors={article.authors}
                   keywords={article.keywords}
-                  // 使用 createdAt 作为 submissionDate
+                  // Use createdAt as submissionDate
                   submissionDate={new Date(article.createdAt).toLocaleDateString()} 
                   status={article.status}
                   link={article._id}

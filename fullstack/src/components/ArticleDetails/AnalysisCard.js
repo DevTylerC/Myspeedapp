@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusion, status, id }) => {
-  // 用于输入的状态变量
+  // State variables for input
   const [method, setMethod] = useState(researchMethod || '');
   const [participantType, setParticipantType] = useState(participants || '');
   const [practiceSupport, setPracticeSupport] = useState(supportsPractice || '');
@@ -48,7 +48,7 @@ const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusi
     <div className="p-4 border rounded shadow bg-white mb-4">
       <h2 className="text-xl font-bold mb-4">Analysis Details</h2>
 
-      {/* 如果文章已被分析，则显示现有的值 */}
+      {/* If the article has been analyzed, display the existing values */}
       {status === 'Analyzed' ? (
         <div>
           <p className="mb-2"><strong>Research Method: </strong>{method || 'Not Specified'}</p>
@@ -57,7 +57,7 @@ const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusi
           <p className="mb-2"><strong>Research Conclusion: </strong>{conclusionText || 'Not Analyzed'}</p>
         </div>
       ) : (
-        // 未被分析时显示表单
+        // Display form when not analyzed
         <div>
           <div className="mb-2">
             <label className="block text-gray-700">Research Method</label>
@@ -126,7 +126,7 @@ const AnalysisCard = ({ researchMethod, participants, supportsPractice, conclusi
             ></textarea>
           </div>
 
-          {/* 保存按钮 */}
+          {/* Save button */}
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-md"
             onClick={handleSaveAnalysis}

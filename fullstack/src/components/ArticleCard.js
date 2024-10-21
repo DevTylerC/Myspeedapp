@@ -1,9 +1,7 @@
-import React from 'react';
-import Link from 'next/link';
 
 function ArticleCard({ title, author, keywords, submissionDate, type, link }) {
 
-  // 根据文章类型返回不同的颜色样式
+  // Return different color styles based on the article type
   const typeColor = (type) => {
     switch (type) {
       case 'Research Paper':
@@ -19,10 +17,10 @@ function ArticleCard({ title, author, keywords, submissionDate, type, link }) {
     }
   };
 
-  // 处理打开新窗口的函数
+  // Function to handle opening a new window
   const handleOpenInNewWindow = (e) => {
-    e.preventDefault();  // 阻止默认行为
-    window.open(`/articles/${link}`, '_blank', 'noopener,noreferrer');  // 打开新窗口
+    e.preventDefault();  // Prevent default behavior
+    window.open(`/articles/${link}`, '_blank', 'noopener,noreferrer');  // Open new window
   };
 
   return (
@@ -30,7 +28,7 @@ function ArticleCard({ title, author, keywords, submissionDate, type, link }) {
       <div className="flex flex-col h-full p-5">
         <header>
           <div className="flex items-center justify-between">
-            {/* 动态颜色的图标 */}
+            {/* Icon with dynamic color */}
             <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${typeColor(type)}`}>
               <svg className="w-9 h-9 fill-current" viewBox="0 0 36 36">
                 <path d="M25 24H11a1 1 0 01-1-1v-5h2v4h12v-4h2v5a1 1 0 01-1 1zM14 13h8v2h-8z" />
@@ -39,7 +37,7 @@ function ArticleCard({ title, author, keywords, submissionDate, type, link }) {
           </div>
         </header>
         <div className="grow mt-2">
-          {/* 用 onClick 事件打开新窗口 */}
+          {/* Use onClick event to open a new window */}
           <h2 
             className="text-xl leading-snug font-semibold text-slate-800 dark:text-slate-100 hover:text-slate-900 dark:hover:text-white mb-1 cursor-pointer" 
             onClick={handleOpenInNewWindow}
@@ -60,7 +58,7 @@ function ArticleCard({ title, author, keywords, submissionDate, type, link }) {
               <div className={`text-xs inline-flex font-medium rounded-full text-center px-2.5 py-1 ${typeColor(type)}`}>{type}</div>
             </div>
             <div>
-              {/* 添加一个 onClick 来在新窗口打开 View 链接 */}
+              {/* Add an onClick to open the View link in a new window  */}
               <span 
                 className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer"
                 onClick={handleOpenInNewWindow}
