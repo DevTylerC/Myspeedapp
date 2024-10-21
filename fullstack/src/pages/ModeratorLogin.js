@@ -27,7 +27,7 @@ const ModeratorLogin = () => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('token', data.token); // 保存 JWT token
+        localStorage.setItem('token', data.token); // Save JWT token
         setErrorMessage(''); // Clear any previous error messages
 
         // Redirect to Moderator Dashboard
